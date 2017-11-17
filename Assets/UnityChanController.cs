@@ -14,7 +14,7 @@ public class UnityChanController : MonoBehaviour {
     private float turnForce = 500.0f;
 
     //ジャンプするための力（追加）
-    private float upForce = 500.0f;
+    private float upForce = 600.0f;
 
     //左右の移動できる範囲（追加）
     private float movableRange = 3.4f;
