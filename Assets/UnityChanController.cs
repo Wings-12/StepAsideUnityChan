@@ -1,23 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UnityChanController : MonoBehaviour {
     //アニメーションするためのコンポーネントを入れる
     private Animator myAnimator;
     //Unityちゃんを移動させるコンポーネントを入れる（追加）
     private Rigidbody myRigidbody;
+   
     //前進するための力（追加）
     private float forwardForce = 800.0f;
-
     //左右に移動するための力（追加）
     private float turnForce = 500.0f;
-
     //ジャンプするための力（追加）
     private float upForce = 600.0f;
 
     //左右の移動できる範囲（追加）
     private float movableRange = 3.4f;
+
+    //動きを減速させる係数（追加）
+    private float coefficient = 0.95f;
+
+    //ゲーム終了の判定（追加）
+    private bool isEnd = false;
+    //ゲーム終了時に表示するテキスト（追加）
+    private GameObject stateText;
+
+    //スコアを表示するテキスト（追加）
+    private GameObject scoreText;
+    //得点（追加）
+    private int score = 0;
+
 
     // Use this for initialization
     void Start () {
@@ -30,10 +44,23 @@ public class UnityChanController : MonoBehaviour {
 
         //Rigidbodyコンポーネントを取得（追加）
         this.myRigidbody = GetComponent<Rigidbody>();
-}
 
-// Update is called once per frame
-void Update () {
+        //シーン中のstateTextオブジェクトを取得（追加）
+        this.stateText = GameObject.Find("GameResultText");
+
+    }
+
+    // Update is called once per frame
+    void Update () {
+
+        //ゲーム終了ならUnityちゃんの動きを減衰する（追加）
+        if (this.isEnd)
+        {
+            this.forwardForce *= this.coefficient;
+            this.turnForce *= this.coefficient;
+            this.upForce *= this.coefficient;
+            this.myAnimator.speed *= this.coefficient;
+        }
 
         //Unityちゃんに前方向の力を加える（追加）
         this.myRigidbody.AddForce(this.transform.forward * this.forwardForce);
@@ -64,5 +91,46 @@ void Update () {
             //Unityちゃんに上方向の力を加える（追加）
             this.myRigidbody.AddForce(this.transform.up * this.upForce);
         }
+
     }
+
+        //トリガーモードで他のオブジェクトと接触した場合の処理（追加）
+        void OnTriggerEnter(Collider other)
+        {
+            //障害物に衝突した場合（追加）
+            if (other.gameObject.tag == "CarTag" || other.gameObject.tag == "TrafficConeTag")
+            {
+                this.isEnd = true;
+
+            //stateTextにGAME OVERを表示（追加）
+            this.stateText.GetComponent<Text>().text = "Game Over";
+        }
+
+        //ゴール地点に到達した場合（追加）
+        if (other.gameObject.tag == "GoalTag")
+            {
+                this.isEnd = true;
+
+            //stateTextにGAME CLEARを表示（追加）
+            this.stateText.GetComponent<Text>().text = "CLEAR!!";
+        }
+
+        //コインに衝突した場合（追加）
+        if (other.gameObject.tag == "CoinTag")
+        {
+
+            //パーティクルを再生（追加）
+            GetComponent<ParticleSystem>().Play();
+
+            //接触したコインのオブジェクトを破棄（追加）
+            Destroy(other.gameObject);
+
+            // スコアを加算(追加)
+            this.score += 10;
+            //ScoreText獲得した点数を表示(追加)
+            this.scoreText.GetComponent<Text>().text = "Score" + score + "pt";
+
+        }
+    }
+
 }
