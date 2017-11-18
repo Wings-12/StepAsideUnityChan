@@ -32,6 +32,11 @@ public class UnityChanController : MonoBehaviour {
     //得点（追加）
     private int score = 0;
 
+    //左ボタン押下の判定（追加）
+    private bool isLButtonDown = false;
+    //右ボタン押下の判定（追加）
+    private bool isRButtonDown = false;
+
 
     // Use this for initialization
     void Start () {
@@ -47,6 +52,9 @@ public class UnityChanController : MonoBehaviour {
 
         //シーン中のstateTextオブジェクトを取得（追加）
         this.stateText = GameObject.Find("GameResultText");
+
+        //シーン中のscoreTextオブジェクトを取得（追加）
+        this.scoreText = GameObject.Find("ScoreText");
 
     }
 
@@ -92,6 +100,8 @@ public class UnityChanController : MonoBehaviour {
             this.myRigidbody.AddForce(this.transform.up * this.upForce);
         }
 
+
+
     }
 
         //トリガーモードで他のオブジェクトと接触した場合の処理（追加）
@@ -132,5 +142,15 @@ public class UnityChanController : MonoBehaviour {
 
         }
     }
+
+    //ジャンプボタンを押した場合の処理（追加）
+    public void GetMyJumpButtonDown()
+    {
+        if (this.transform.position.y > 0.5f)
+        {
+            this.myAnimator.SetBool("Jump", true);
+            this.myRigidbody.AddForce(this.transform.up * this.upForce);
+        }
+}
 
 }
