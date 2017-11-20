@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class ItemDestroyer : MonoBehaviour
 {
-    //carPrefabを入れる
-    public GameObject carPrefab;
-    //coinPrefabを入れる
-    public GameObject coinPrefab;
-    //cornPrefabを入れる
-    public GameObject conePrefab;
 
     //課題１内容：コイン・コーン・車（以下アイテムと呼ぶ）を生成するオブジェクトをUnityちゃんがを
     //通り過ぎて画面外に行ったら破棄する（課題１）
@@ -33,7 +27,7 @@ public class ItemDestroyer : MonoBehaviour
         //アイテムが画面外に出た場合（課題１）コメント：ゲームを再生したときにアイテムが画面外で破棄されているかわからない
         //if (this.transform.position.z < this.visiblePosZ)
         //上記コメントのため、次はUnityちゃんを通り過ぎたときにアイテムをが破棄されるようにする
-        if (this.transform.position.z < this.unityChan.GetComponent<Transform>().position.z)
+        if (this.transform.position.z < this.unityChan.GetComponent<Transform>().position.z -6.5f)
         {
             //アイテムを破棄する（課題１）
             //if (this.gameObject.tag == "ItemGeneratorTag")
