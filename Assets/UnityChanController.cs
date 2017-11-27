@@ -100,7 +100,12 @@ public class UnityChanController : MonoBehaviour {
             this.myRigidbody.AddForce(this.transform.up * this.upForce);
         }
 
-
+        //dキーの入力判定(オリジナル)
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            //入力があった時にアニメーション再生と攻撃判定生成
+            this.myAnimator.SetTrigger("HikickTrigger");
+        }
 
     }
 
