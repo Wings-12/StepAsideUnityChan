@@ -37,6 +37,8 @@ public class UnityChanController : MonoBehaviour {
     //右ボタン押下の判定（追加）
     private bool isRButtonDown = false;
 
+    // <summary>無敵モード</summary>
+    [SerializeField] bool m_godMode;
 
     // Use this for initialization
     void Start () {
@@ -56,10 +58,14 @@ public class UnityChanController : MonoBehaviour {
         //シーン中のscoreTextオブジェクトを取得（追加）
         this.scoreText = GameObject.Find("ScoreText");
 
-    }
+        //現在再生されているアニメーション情報を取得(animator.GetCurrentAnimatorStateInfo(0)の使い方が違う)
+        //AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-    // Update is called once per frame
-    void Update () {
+
+}
+
+// Update is called once per frame
+void Update () {
 
         //ゲーム終了ならUnityちゃんの動きを減衰する（追加）
         if (this.isEnd)
@@ -100,11 +106,21 @@ public class UnityChanController : MonoBehaviour {
             this.myRigidbody.AddForce(this.transform.up * this.upForce);
         }
 
+        //Hikickしていないときの設定
+        if(this.myAnimator.GetCurrentAnimatorStateInfo(0).IsName("Hikick"))
+            {
+            this.myAnimator.SetBool("Hikick", false);
+            }
         //dキーの入力判定(オリジナル)
         if (Input.GetKeyDown(KeyCode.D))
         {
-            //入力があった時にアニメーション再生と攻撃判定生成
-            this.myAnimator.SetTrigger("HikickTrigger");
+            this.myAnimator.SetBool("Hikick", true);
+            //入力があった時にアニメーション再生
+            //this.myAnimator.SetTrigger("HikickTrigger");
+            //this.gameObject.transform.position = new Vector3(transform.position.x, 2.0f, transform.position.z);
+
+            //攻撃判定生成
+           
         }
 
     }
@@ -119,34 +135,56 @@ public class UnityChanController : MonoBehaviour {
 
             //stateTextにGAME OVERを表示（追加）
             this.stateText.GetComponent<Text>().text = "Game Over";
-        }
+            }
 
-        //ゴール地点に到達した場合（追加）
-        if (other.gameObject.tag == "GoalTag")
+            //ゴール地点に到達した場合（追加）
+            if (other.gameObject.tag == "GoalTag")
+                {
+                    this.isEnd = true;
+
+                //stateTextにGAME CLEARを表示（追加）
+                this.stateText.GetComponent<Text>().text = "CLEAR!!";
+            }
+
+            //コインに衝突した場合（追加）
+            if (other.gameObject.tag == "CoinTag")
             {
-                this.isEnd = true;
 
-            //stateTextにGAME CLEARを表示（追加）
-            this.stateText.GetComponent<Text>().text = "CLEAR!!";
+                //パーティクルを再生（追加）
+                GetComponent<ParticleSystem>().Play();
+
+                //接触したコインのオブジェクトを破棄（追加）
+                Destroy(other.gameObject);
+
+                // スコアを加算(追加)
+                this.score += 10;
+                //ScoreText獲得した点数を表示(追加)
+                this.scoreText.GetComponent<Text>().text = "Score" + score + "pt";
+            }
+
+        //OnTriggerEnter関数内でアニメーションの状態を見て、Hikickの状態だったらDestroy
+        //（もっと簡単な方法があるのでそちらを採用する）
+        //if (animator.GetCurrentAnimationStateInfo(0))
+        //    {
+
+        //    }
+        if (!m_godMode)
+            {
+
+            if (this.myAnimator.GetCurrentAnimatorStateInfo(0).IsName("Hikick"))
+                {
+                    this.isEnd = false;
+                    GetComponent<ParticleSystem>().Play();
+                    Destroy(other.gameObject);
+                }
+            else
+                {
+                    this.isEnd = true;
+                    //stateTextにGAME OVERを表示（追加）
+                    this.stateText.GetComponent<Text>().text = "GAME OVER";
+                }
+            }
         }
-
-        //コインに衝突した場合（追加）
-        if (other.gameObject.tag == "CoinTag")
-        {
-
-            //パーティクルを再生（追加）
-            GetComponent<ParticleSystem>().Play();
-
-            //接触したコインのオブジェクトを破棄（追加）
-            Destroy(other.gameObject);
-
-            // スコアを加算(追加)
-            this.score += 10;
-            //ScoreText獲得した点数を表示(追加)
-            this.scoreText.GetComponent<Text>().text = "Score" + score + "pt";
-
-        }
-    }
 
     //ジャンプボタンを押した場合の処理（追加）
     public void GetMyJumpButtonDown()
