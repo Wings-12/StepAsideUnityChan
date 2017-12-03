@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement; //（追加）
 
 public class UnityChanController : MonoBehaviour {
     //アニメーションするためのコンポーネントを入れる
@@ -37,8 +38,8 @@ public class UnityChanController : MonoBehaviour {
     //右ボタン押下の判定（追加）
     private bool isRButtonDown = false;
 
-    // <summary>無敵モード</summary>
-    [SerializeField] bool m_godMode;
+    // <summary>無敵モード</summary> 　　←使わない
+    //[SerializeField] bool m_godMode;
 
     // Use this for initialization
     void Start () {
@@ -74,6 +75,14 @@ void Update () {
             this.turnForce *= this.coefficient;
             this.upForce *= this.coefficient;
             this.myAnimator.speed *= this.coefficient;
+
+            // クリックされたらシーンをロードする（追加）
+            if (Input.GetMouseButtonDown(0))
+                {
+                    //GameSceneを読み込む（追加）
+                    SceneManager.LoadScene("GameScene");
+                }
+
         }
 
         //Unityちゃんに前方向の力を加える（追加）
@@ -117,7 +126,7 @@ void Update () {
             this.myAnimator.SetBool("Hikick", true);
             //入力があった時にアニメーション再生
             //this.myAnimator.SetTrigger("HikickTrigger");
-            //this.gameObject.transform.position = new Vector3(transform.position.x, 2.0f, transform.position.z);
+            this.gameObject.transform.position = new Vector3(transform.position.x, 1.2f, transform.position.z);
 
             //攻撃判定生成
            
@@ -128,14 +137,44 @@ void Update () {
         //トリガーモードで他のオブジェクトと接触した場合の処理（追加）
         void OnTriggerEnter(Collider other)
         {
-            //障害物に衝突した場合（追加）
-            if (other.gameObject.tag == "CarTag" || other.gameObject.tag == "TrafficConeTag")
+        //障害物に衝突した場合（追加）
+        if (other.gameObject.tag == "CarTag" || other.gameObject.tag == "TrafficConeTag")
             {
-                this.isEnd = true;
+        //OnTriggerEnter関数内でアニメーションの状態を見て、Hikickの状態だったらDestroy
+        //（もっと簡単な方法があるのでそちらを採用する）
+        //if (animator.GetCurrentAnimationStateInfo(0))
+        //    {
 
-            //stateTextにGAME OVERを表示（追加）
-            this.stateText.GetComponent<Text>().text = "Game Over";
-            }
+        //    }
+
+            if (this.myAnimator.GetCurrentAnimatorStateInfo(0).IsName("Hikick"))
+                {
+                    GetComponent<ParticleSystem>().Play();
+                    Destroy(other.gameObject);
+                }
+            else
+                {
+                    this.isEnd = true;
+                    //stateTextにGAME OVERを表示（追加）
+                    this.stateText.GetComponent<Text>().text = "GAME OVER";
+
+                    // クリックされたらシーンをロードする（追加）
+                    //if (Input.GetMouseButtonDown(0))
+                    //{
+                    //    //GameSceneを読み込む（追加）
+                    //    SceneManager.LoadScene("GameScene");
+                    //}
+
+                }
+        }
+              
+                //else
+                //{
+                //    this.isEnd = true;
+
+                //    //stateTextにGAME OVERを表示（追加）
+                //    this.stateText.GetComponent<Text>().text = "Game Over";
+                //}
 
             //ゴール地点に到達した場合（追加）
             if (other.gameObject.tag == "GoalTag")
@@ -162,28 +201,6 @@ void Update () {
                 this.scoreText.GetComponent<Text>().text = "Score" + score + "pt";
             }
 
-        //OnTriggerEnter関数内でアニメーションの状態を見て、Hikickの状態だったらDestroy
-        //（もっと簡単な方法があるのでそちらを採用する）
-        //if (animator.GetCurrentAnimationStateInfo(0))
-        //    {
-
-        //    }
-        if (!m_godMode)
-            {
-
-            if (this.myAnimator.GetCurrentAnimatorStateInfo(0).IsName("Hikick"))
-                {
-                    this.isEnd = false;
-                    GetComponent<ParticleSystem>().Play();
-                    Destroy(other.gameObject);
-                }
-            else
-                {
-                    this.isEnd = true;
-                    //stateTextにGAME OVERを表示（追加）
-                    this.stateText.GetComponent<Text>().text = "GAME OVER";
-                }
-            }
         }
 
     //ジャンプボタンを押した場合の処理（追加）

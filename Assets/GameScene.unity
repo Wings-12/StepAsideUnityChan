@@ -886,7 +886,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 721651763
+  randomSeed: -768240887
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -4903,7 +4903,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4016010535263556, guid: c30cad2873dcc514aa4189ac23359ea4, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -3.5559933
+      value: -3.29
       objectReference: {fileID: 0}
     - target: {fileID: 4016010535263556, guid: c30cad2873dcc514aa4189ac23359ea4, type: 2}
       propertyPath: m_LocalPosition.y
@@ -4911,7 +4911,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4016010535263556, guid: c30cad2873dcc514aa4189ac23359ea4, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -223.60495
+      value: -240.91
       objectReference: {fileID: 0}
     - target: {fileID: 4016010535263556, guid: c30cad2873dcc514aa4189ac23359ea4, type: 2}
       propertyPath: m_LocalRotation.x
@@ -4932,6 +4932,21 @@ Prefab:
     - target: {fileID: 4016010535263556, guid: c30cad2873dcc514aa4189ac23359ea4, type: 2}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 65890858997703718, guid: c30cad2873dcc514aa4189ac23359ea4,
+        type: 2}
+      propertyPath: m_Size.z
+      value: 5.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 65890858997703718, guid: c30cad2873dcc514aa4189ac23359ea4,
+        type: 2}
+      propertyPath: m_Size.y
+      value: 11.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 65890858997703718, guid: c30cad2873dcc514aa4189ac23359ea4,
+        type: 2}
+      propertyPath: m_Size.x
+      value: 9.01
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114296831357754118, guid: c30cad2873dcc514aa4189ac23359ea4, type: 2}
@@ -5076,6 +5091,21 @@ Prefab:
     - target: {fileID: 4922793403805716, guid: 0cca8c916209d6e45868e60c2d81de9b, type: 2}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 65695655929247372, guid: 0cca8c916209d6e45868e60c2d81de9b,
+        type: 2}
+      propertyPath: m_Size.z
+      value: 1.58
+      objectReference: {fileID: 0}
+    - target: {fileID: 65695655929247372, guid: 0cca8c916209d6e45868e60c2d81de9b,
+        type: 2}
+      propertyPath: m_Size.y
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 65695655929247372, guid: 0cca8c916209d6e45868e60c2d81de9b,
+        type: 2}
+      propertyPath: m_Size.x
+      value: 1.57
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114468403598666876, guid: 0cca8c916209d6e45868e60c2d81de9b, type: 2}
