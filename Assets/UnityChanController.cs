@@ -16,6 +16,8 @@ public class UnityChanController : MonoBehaviour {
     private float turnForce = 500.0f;
     //ジャンプするための力（追加）
     private float upForce = 600.0f;
+    // ジャンプできる回数。
+    public const int MAX_JUMP_COUNT = 2;	
 
     //左右の移動できる範囲（追加）
     private float movableRange = 3.4f;
@@ -38,6 +40,13 @@ public class UnityChanController : MonoBehaviour {
     //右ボタン押下の判定（追加）
     private bool isRButtonDown = false;
 
+    //Unityちゃんをしゃべらせるコンポーネントを入れる
+    //private AudioSource audioSourceJump
+    private AudioSource sound01;
+    private AudioSource sound02;
+    private AudioSource sound03;
+    private AudioSource sound04;
+
     // <summary>無敵モード</summary> 　　←使わない
     //[SerializeField] bool m_godMode;
 
@@ -59,11 +68,19 @@ public class UnityChanController : MonoBehaviour {
         //シーン中のscoreTextオブジェクトを取得（追加）
         this.scoreText = GameObject.Find("ScoreText");
 
+        //UnityちゃんのAudioSourceのjumpを取得
+        //this.audioSourceJump = GetComponent<AudioSource>().Play().;
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+        sound01 = audioSources[0];
+        sound02 = audioSources[1];
+        sound03 = audioSources[2];
+        sound04 = audioSources[3];
+
         //現在再生されているアニメーション情報を取得(animator.GetCurrentAnimatorStateInfo(0)の使い方が違う)
         //AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
 
-}
+    }
 
 // Update is called once per frame
 void Update () {
@@ -113,6 +130,10 @@ void Update () {
             this.myAnimator.SetBool("Jump", true);
             //Unityちゃんに上方向の力を加える（追加）
             this.myRigidbody.AddForce(this.transform.up * this.upForce);
+
+            //Unityちゃんが掛け声をかける
+            //GetComponent<AudioSource>().Play();
+            sound01.PlayOneShot(sound01.clip);
         }
 
         //Hikickしていないときの設定
@@ -128,8 +149,9 @@ void Update () {
             //this.myAnimator.SetTrigger("HikickTrigger");
             this.gameObject.transform.position = new Vector3(transform.position.x, 1.2f, transform.position.z);
 
-            //攻撃判定生成
-           
+            //Unityちゃんが掛け声をかける
+            //GetComponent<AudioSource>().Play();
+            sound02.PlayOneShot(sound02.clip);
         }
 
     }
@@ -140,18 +162,26 @@ void Update () {
         //障害物に衝突した場合（追加）
         if (other.gameObject.tag == "CarTag" || other.gameObject.tag == "TrafficConeTag")
             {
-        //OnTriggerEnter関数内でアニメーションの状態を見て、Hikickの状態だったらDestroy
-        //（もっと簡単な方法があるのでそちらを採用する）
-        //if (animator.GetCurrentAnimationStateInfo(0))
-        //    {
+            //モノの破壊音
+            sound04.PlayOneShot(sound04.clip);
+            //OnTriggerEnter関数内でアニメーションの状態を見て、Hikickの状態だったらDestroy
+            //（もっと簡単な方法があるのでそちらを採用する）
+            //if (animator.GetCurrentAnimationStateInfo(0))
+            //    {
 
-        //    }
+            //    }
 
             if (this.myAnimator.GetCurrentAnimatorStateInfo(0).IsName("Hikick"))
                 {
                     GetComponent<ParticleSystem>().Play();
                     Destroy(other.gameObject);
-                }
+
+                    // スコアを加算(追加)
+                    this.score += 30;
+                    //ScoreText獲得した点数を表示(追加)
+                    this.scoreText.GetComponent<Text>().text = "Score" + score + "pt";
+
+            }
             else
                 {
                     this.isEnd = true;
@@ -199,7 +229,13 @@ void Update () {
                 this.score += 10;
                 //ScoreText獲得した点数を表示(追加)
                 this.scoreText.GetComponent<Text>().text = "Score" + score + "pt";
-            }
+
+                //コイン音
+                sound03.PlayOneShot(sound03.clip);
+
+                //スピードアップ
+                this.forwardForce += 50;
+        }
 
         }
 
